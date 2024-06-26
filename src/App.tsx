@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./assets/css/App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useState } from "react";
 
+import { NewickLexer } from "./utils/Tree/Lexer";
+import { NewickParser } from "./utils/Tree/Parser";
+import { Tree } from "./utils/Tree/Node";
+
+import SvgDimensionsProvider from "./providers/SvgDimensionsProvider";
+import Phylogeny from "./components/Phylogeny";
+
+const App = () => {
+  const exampleTree =
+    "(ant:17, ((bat:31, cow:22):25, dog:22):10, ((elk:33, fox:12):10, giraffe:15):11);";
+  const [newick, setNewick] = useState(exampleTree);
+
+  const [tree, setTree] = useState<Tree | null>(null);
+
+  const parseTree = () => {
+    const lexer = new NewickLexer(newick);
+    const parser = new NewickParser(lexer.lex());
+    const parsedTree = parser.parseTree();
+    setTree(parsedTree);
+    parsedTree
+      ?.getAllNodes("preorder")
+      .forEach((node) =>
+        console.log(
+          node.id,
+          node.label,
+          node.branchLength,
+          node.isRoot(),
+          node.isLeaf(),
+          node.getDistanceToRoot()
+        )
+      );
+  };
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <div style={{ color: "white" }}>
+          Enter a newick tree:{" "}
+          <input
+            value={newick}
+            onChange={(event) => setNewick(event.target.value)}
+          />
+          <button onClick={parseTree}>Submit</button>
+        </div>
+        <div
+          id="svg-container-1"
+          className="svg-container"
+          style={{ height: "600px", width: "100%" }}
+        >
+          <SvgDimensionsProvider>
+            {tree ? <Phylogeny tree={tree} /> : null}
+          </SvgDimensionsProvider>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
