@@ -37,6 +37,10 @@ jobs:
           node-version: '20.13.0'
       - name: Install Requirements from package.json
         run: yarn install
+      - name: Build site
+        run: yarn build
+      - name: Check results
+        run: ls ./dist/
       # - name: Setup Pages
       #   uses: actions/configure-pages@v5
       # - name: Upload artifact
