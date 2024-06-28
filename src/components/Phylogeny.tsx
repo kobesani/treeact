@@ -16,11 +16,13 @@ interface PhylogenyDefaults {
 
 interface PhylogenyProps {
   tree: Tree;
+  nodes: Node[];
   defaults?: PhylogenyDefaults;
 }
 
 const Phylogeny = ({
   tree,
+  nodes,
   defaults = {
     rootBranchLength: 1,
     nodeLabelPadding: 5,
@@ -48,22 +50,6 @@ const Phylogeny = ({
 
   const leafNodes = tree.getLeafNodes();
 
-  // // prepping horizontal axis domain and range
-  // // add a little space for a small piece of branch for the root
-  // const domainLowerBound = -defaults.rootBranchLength;
-  // const domainUpperBound = tree.getMaxDistanceToRoot();
-  // const rangeLowerBound = defaults.paddingLeft;
-  // // adjusting upper bound for adding node labels for the leaf nodes
-  // // leaves maximum space for a label, plus default padding and node label padding between tips
-  // const rangeUpperBound =
-  //   width -
-  //   (defaults.paddingRight + defaults.nodeLabelPadding + maxLabelLength);
-
-  // const horizontalAxisMapping = useLinearScale({
-  //   domain: [domainLowerBound, domainUpperBound],
-  //   range: [rangeLowerBound, rangeUpperBound],
-  // });
-
   const horizontalAxisMapping = (n: number) =>
     horizontalLengthScalar * (n + defaults.rootBranchLength) +
     defaults.paddingLeft;
@@ -80,7 +66,7 @@ const Phylogeny = ({
   return (
     <>
       <g>
-        {tree.getAllNodes("preorder").map((node, index) => (
+        {nodes.map((node, index) => (
           <NodeLayout
             key={index}
             node={node}

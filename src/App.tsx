@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { NewickLexer } from "./utils/Tree/Lexer";
 import { NewickParser } from "./utils/Tree/Parser";
-import { Tree } from "./utils/Tree/Node";
+import { Tree, Node } from "./utils/Tree/Node";
 
 import SvgDimensionsProvider from "./providers/SvgDimensionsProvider";
 import Phylogeny from "./components/Phylogeny";
@@ -15,12 +15,14 @@ const App = () => {
   const [newick, setNewick] = useState(exampleTree);
 
   const [tree, setTree] = useState<Tree | null>(null);
+  const [nodes, setNodes] = useState<Node[]>([]);
 
   const parseTree = () => {
     const lexer = new NewickLexer(newick);
     const parser = new NewickParser(lexer.lex());
     const parsedTree = parser.parseTree();
     setTree(parsedTree);
+    setNodes(parsedTree?.getAllNodes("preorder") || []);
     parsedTree
       ?.getAllNodes("preorder")
       .forEach((node) =>
@@ -51,7 +53,7 @@ const App = () => {
           style={{ height: "600px", width: "100%" }}
         >
           <SvgDimensionsProvider>
-            {tree ? <Phylogeny tree={tree} /> : null}
+            {tree ? <Phylogeny tree={tree} nodes={nodes} /> : null}
           </SvgDimensionsProvider>
         </div>
       </div>
