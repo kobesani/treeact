@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Button, TextField, Typography, Grid } from "@mui/material";
+
 import { useLinearScale } from "../hooks/LinearScale";
 import { useSvgDimensions } from "../hooks/SvgDimensions";
 import useWidthOptimizer from "../hooks/OptimizeWidth";
@@ -38,6 +40,7 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
   const [newick, setNewick] = useState(exampleTree);
   const [tree, setTree] = useState<Tree | null>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
+  const [parseError, setParseError] = useState<boolean>(false);
 
   const parseTree = () => {
     const lexer = new NewickLexer(newick);
@@ -60,27 +63,35 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
   };
 
   return (
-    <>
-      <div style={{ color: "white" }}>
-        Enter a newick tree:{" "}
-        <input
+    <Grid container alignItems="center" spacing={2}>
+      <Grid item>
+        <TextField
+          sx={{ input: { color: "white" } }}
+          label="Enter a valid newick tree ..."
+          variant="outlined"
           value={newick}
           onChange={(event) => setNewick(event.target.value)}
         />
-        <button onClick={parseTree}>Submit</button>
-      </div>
-      <div
-        id="svg-container-1"
-        className="svg-container"
-        style={{ height: "600px", width: "100%" }}
-      >
-        <SvgDimensionsProvider>
-          {tree ? (
-            <PhylogenySvg tree={tree} nodes={nodes} layout={layout} />
-          ) : null}
-        </SvgDimensionsProvider>
-      </div>
-    </>
+      </Grid>
+      <Grid item>
+        <Button onClick={parseTree} variant="contained" size="large">
+          Submit
+        </Button>
+      </Grid>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        <div
+          id="svg-container-1"
+          className="svg-container"
+          style={{ height: "600px", width: "100%" }}
+        >
+          <SvgDimensionsProvider>
+            {tree ? (
+              <PhylogenySvg tree={tree} nodes={nodes} layout={layout} />
+            ) : null}
+          </SvgDimensionsProvider>
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 
