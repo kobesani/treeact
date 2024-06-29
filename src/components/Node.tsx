@@ -95,7 +95,7 @@ const NodeLayout = ({
     };
 
     requestAnimationFrame(animateHorizontalLine);
-  }, []);
+  }, [node]);
 
   useEffect(() => {
     if (verticalPositionsChildren.length === 0) return;
@@ -126,7 +126,7 @@ const NodeLayout = ({
     };
 
     requestAnimationFrame(animateVerticalLine);
-  }, []);
+  }, [node]);
 
   return (
     <>
