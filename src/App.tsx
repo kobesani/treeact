@@ -21,7 +21,7 @@ const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Grid container alignItems="center" flexDirection="row" spacing={2}>
+      <Grid container alignItems="center" flexDirection="row" spacing={2} padding={2}>
         <Grid item>
           <Button
             onClick={() => setLayout("squared")}
