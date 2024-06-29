@@ -9,6 +9,7 @@ import { NewickParser } from "../utils/Tree/Parser";
 
 import NodeLayout from "./Node";
 import SvgDimensionsProvider from "../providers/SvgDimensionsProvider";
+import AngularNodeLayout from "./AngularNode";
 
 interface PhylogenyDefaults {
   rootBranchLength: number;
@@ -26,6 +27,7 @@ interface PhylogenyProps {
 interface PhylogenySvgProps {
   tree: Tree;
   nodes: Node[];
+  layout: "squared" | "angular";
   defaults?: PhylogenyDefaults;
 }
 
@@ -73,7 +75,9 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
         style={{ height: "600px", width: "100%" }}
       >
         <SvgDimensionsProvider>
-          {tree ? <PhylogenySvg tree={tree} nodes={nodes} /> : null}
+          {tree ? (
+            <PhylogenySvg tree={tree} nodes={nodes} layout={layout} />
+          ) : null}
         </SvgDimensionsProvider>
       </div>
     </>
@@ -83,13 +87,14 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
 const PhylogenySvg = ({
   tree,
   nodes,
+  layout,
   defaults = {
     rootBranchLength: 1,
     nodeLabelPadding: 5,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
 }: PhylogenySvgProps) => {
   const { width, height } = useSvgDimensions();
@@ -141,17 +146,29 @@ const PhylogenySvg = ({
   return (
     <>
       <g>
-        {nodes.map((node, index) => (
-          <NodeLayout
-            key={index}
-            node={node}
-            verticalAxisMapping={verticalAxisMapping}
-            horizontalAxisMapping={horizontalAxisMapping}
-            leafNodeIndexMap={leafNodesToIndex}
-            defaultBranchLength={defaults.rootBranchLength}
-            nodeLabelPadding={defaults.nodeLabelPadding}
-          />
-        ))}
+        {layout === "angular"
+          ? nodes.map((node, index) => (
+              <AngularNodeLayout
+                key={index}
+                node={node}
+                verticalAxisMapping={verticalAxisMapping}
+                horizontalAxisMapping={horizontalAxisMapping}
+                leafNodeIndexMap={leafNodesToIndex}
+                defaultBranchLength={defaults.rootBranchLength}
+                nodeLabelPadding={defaults.nodeLabelPadding}
+              />
+            ))
+          : nodes.map((node, index) => (
+              <NodeLayout
+                key={index}
+                node={node}
+                verticalAxisMapping={verticalAxisMapping}
+                horizontalAxisMapping={horizontalAxisMapping}
+                leafNodeIndexMap={leafNodesToIndex}
+                defaultBranchLength={defaults.rootBranchLength}
+                nodeLabelPadding={defaults.nodeLabelPadding}
+              />
+            ))}
       </g>
     </>
   );

@@ -23,7 +23,8 @@ const NodeLayout = ({
 
   const getVerticalPositioning = (node: Node): number => {
     if (node.isLeaf() && leafNodeIndexMap.has(node)) {
-      return leafNodeIndexMap.get(node)!;
+      // add 0.5 to center the tree in the SVG relative to padding
+      return leafNodeIndexMap.get(node)! + 0.5;
     } else {
       return (
         node.children.reduce(
