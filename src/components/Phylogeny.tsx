@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, TextField, Typography, Grid } from "@mui/material";
+import { Button, TextField, Grid } from "@mui/material";
 
 import { useLinearScale } from "../hooks/LinearScale";
 import { useSvgDimensions } from "../hooks/SvgDimensions";
@@ -40,7 +40,7 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
   const [newick, setNewick] = useState(exampleTree);
   const [tree, setTree] = useState<Tree | null>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
-  const [parseError, setParseError] = useState<boolean>(false);
+  // const [parseError, setParseError] = useState<boolean>(false);
 
   const parseTree = () => {
     const lexer = new NewickLexer(newick);
