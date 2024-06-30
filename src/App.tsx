@@ -27,6 +27,7 @@ const App = () => {
             onClick={() => setLayout("squared")}
             variant="contained"
             size="large"
+            color={layout === "squared" ? "success" : "secondary"}
           >
             Squared
           </Button>
@@ -36,6 +37,7 @@ const App = () => {
             onClick={() => setLayout("angular")}
             variant="contained"
             size="large"
+            color={layout === "angular" ? "success" : "secondary"}
           >
             Angular
           </Button>
