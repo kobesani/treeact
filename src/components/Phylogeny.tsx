@@ -66,7 +66,6 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
     <Grid container alignItems="center" spacing={2}>
       <Grid item>
         <TextField
-          sx={{ input: { color: "white" }}}
           error={parseError ? true : false}
           label="Newick Tree"
           helperText={parseError ? parseError : "Enter a valid newick tree."}
@@ -77,7 +76,8 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
         />
       </Grid>
       <Grid item>
-        <Box pb={3}> {/* padding bottom (pb) for blank helpertext*/}
+        <Box pb={3}>
+          {/* padding bottom (pb) for blank helpertext*/}
           <Button onClick={parseTree} variant="contained" size="large">
             Submit
           </Button>

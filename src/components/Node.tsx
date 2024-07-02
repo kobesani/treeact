@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Node } from "../utils/Tree/Node";
+import { useTheme } from "@mui/material";
 
 export interface NodeLayoutProps {
   node: Node;
@@ -20,6 +21,8 @@ const NodeLayout = ({
 }: NodeLayoutProps) => {
   const horizontalLineRef = useRef<SVGLineElement | null>(null);
   const verticalLineRef = useRef<SVGLineElement | null>(null);
+
+  const theme = useTheme();
 
   const getVerticalPositioning = (node: Node): number => {
     if (node.isLeaf() && leafNodeIndexMap.has(node)) {
@@ -144,7 +147,7 @@ const NodeLayout = ({
             textAnchor="start"
             fontSize={16}
             dominantBaseline="middle"
-            fill="white"
+            fill={theme.palette.getContrastText(theme.palette.background.default)}
             x={initialHorizontalPosition + nodeLabelPadding}
             y={verticalPosition}
           >
@@ -164,7 +167,7 @@ const NodeLayout = ({
             y1={minVerticalPosition}
             x2={initialHorizontalPosition}
             y2={maxVerticalPosition}
-            stroke="white"
+            stroke={theme.palette.getContrastText(theme.palette.background.default)}
             strokeWidth={3}
           />
         ) : null}
@@ -175,7 +178,7 @@ const NodeLayout = ({
           x2={finalHorizontalPosition}
           y1={verticalPosition}
           y2={verticalPosition}
-          stroke="white"
+          stroke={theme.palette.getContrastText(theme.palette.background.default)}
           strokeWidth={3}
           strokeLinecap="round"
         />

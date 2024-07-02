@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material";
 import { Node } from "../utils/Tree/Node";
 
 export interface AngularNodeLayoutProps {
@@ -17,6 +18,7 @@ const AngularNodeLayout = ({
   defaultBranchLength,
   nodeLabelPadding,
 }: AngularNodeLayoutProps) => {
+  const theme = useTheme();
   const getVerticalPositioning = (node: Node): number => {
     if (node.isLeaf() && leafNodeIndexMap.has(node)) {
       // add 0.5 to center the tree in the SVG relative to padding
@@ -62,7 +64,7 @@ const AngularNodeLayout = ({
             textAnchor="start"
             fontSize={16}
             dominantBaseline="middle"
-            fill="white"
+            fill={theme.palette.getContrastText(theme.palette.background.default)}
             x={initialHorizontalPosition + nodeLabelPadding}
             y={verticalPosition}
           >
@@ -75,7 +77,7 @@ const AngularNodeLayout = ({
           x2={finalHorizontalPosition}
           y1={verticalPosition}
           y2={parentVerticalPosition}
-          stroke="white"
+          stroke={theme.palette.getContrastText(theme.palette.background.default)}
           strokeWidth={3}
           strokeLinecap="round"
         />
