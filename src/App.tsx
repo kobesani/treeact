@@ -5,6 +5,8 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Phylogeny from "./components/Phylogeny";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -40,7 +42,7 @@ const App = () => {
               size="large"
               color="success"
             >
-              Light
+              <LightModeIcon />
             </Button>
             <Button
               onClick={() => themeHandler("dark")}
@@ -48,7 +50,7 @@ const App = () => {
               size="large"
               color="success"
             >
-              Dark
+              <DarkModeIcon />
             </Button>
           </ButtonGroup>
         </Grid>
