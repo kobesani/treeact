@@ -39,7 +39,7 @@ const App = () => {
             <Button
               onClick={() => themeHandler("light")}
               variant={theme === "light" ? "contained" : "outlined"}
-              size="large"
+              size="small"
               color="success"
             >
               <LightModeIcon />
@@ -47,7 +47,7 @@ const App = () => {
             <Button
               onClick={() => themeHandler("dark")}
               variant={theme === "dark" ? "contained" : "outlined"}
-              size="large"
+              size="small"
               color="success"
             >
               <DarkModeIcon />
@@ -59,7 +59,7 @@ const App = () => {
             <Button
               onClick={() => setLayout("angular")}
               variant={layout === "angular" ? "contained" : "outlined"}
-              size="large"
+              size="small"
               color="success"
             >
               Angular
@@ -67,7 +67,7 @@ const App = () => {
             <Button
               onClick={() => setLayout("squared")}
               variant={layout === "squared" ? "contained" : "outlined"}
-              size="large"
+              size="small"
               color="success"
             >
               Squared
@@ -75,7 +75,7 @@ const App = () => {
           </ButtonGroup>
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={12}>
-          <Phylogeny layout={layout} />
+          <Phylogeny layout={layout} theme={theme} />
         </Grid>
       </Grid>
     </ThemeProvider>

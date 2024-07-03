@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button, TextField, Grid, Box } from "@mui/material";
+import { useRef, useState } from "react";
+import { Button, TextField, Grid, Box, useTheme } from "@mui/material";
 
 import { useLinearScale } from "../hooks/LinearScale";
 import { useSvgDimensions } from "../hooks/SvgDimensions";
@@ -25,17 +25,43 @@ interface PhylogenyDefaults {
 
 interface PhylogenyProps {
   layout: "squared" | "angular";
+  theme: "dark" | "light";
 }
 
 interface PhylogenySvgProps {
   tree: Tree;
   nodes: Node[];
   layout: "squared" | "angular";
+  // theme: "dark" | "light"
   defaults?: PhylogenyDefaults;
 }
 
 const Phylogeny = ({ layout }: PhylogenyProps) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const downloadSvg = (filename: string) => {
+    if (!svgRef.current) return;
+
+    const svgElement = svgRef.current;
+    const {width, height} = svgElement.getBoundingClientRect();
+    svgElement.setAttribute("height", height.toString());
+    svgElement.setAttribute("width", width.toString());
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svgElement);
+    const blob = new Blob([svgString], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(url);
+  };
+
   console.log(layout);
+  const [exportFilename, setExportFilename] = useState<string>("example.svg");
   const exampleTree =
     "(ant:17, ((bat:31, cow:22):25, dog:22):10, ((elk:33, fox:12):10, giraffe:15):11);";
   const [newick, setNewick] = useState(exampleTree);
@@ -78,7 +104,7 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
       <Grid item>
         <Box pb={3}>
           {/* padding bottom (pb) for blank helpertext*/}
-          <Button onClick={parseTree} variant="contained" size="large">
+          <Button onClick={parseTree} variant="contained" size="small">
             Submit
           </Button>
         </Box>
@@ -89,12 +115,29 @@ const Phylogeny = ({ layout }: PhylogenyProps) => {
           className="svg-container"
           style={{ height: "600px", width: "100%" }}
         >
-          <SvgDimensionsProvider>
+          <SvgDimensionsProvider ref={svgRef}>
             {tree ? (
               <PhylogenySvg tree={tree} nodes={nodes} layout={layout} />
             ) : null}
           </SvgDimensionsProvider>
         </div>
+      </Grid>
+      <Grid item>
+        <TextField
+          label="SVG Filename"
+          variant="outlined"
+          value={exportFilename}
+          onChange={(event) => setExportFilename(event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <Button
+          onClick={() => downloadSvg(exportFilename)}
+          variant="contained"
+          size="small"
+        >
+          Download
+        </Button>
       </Grid>
     </Grid>
   );
@@ -114,6 +157,7 @@ const PhylogenySvg = ({
   },
 }: PhylogenySvgProps) => {
   const { width, height } = useSvgDimensions();
+  const theme = useTheme();
 
   console.log(`PhylogenySvg: ${width} ${height}`);
   console.log({
@@ -161,6 +205,14 @@ const PhylogenySvg = ({
 
   return (
     <>
+      {theme.palette.mode === "dark" ? (
+        <rect
+          id="background"
+          height="100%"
+          width="100%"
+          fill={theme.palette.background.default}
+        ></rect>
+      ) : null}
       <g>
         {layout === "angular"
           ? nodes.map((node, index) => (

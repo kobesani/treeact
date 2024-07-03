@@ -1,17 +1,32 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
-
+import {
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { SvgDimensions, SvgDimensionsContext } from "../hooks/SvgDimensions";
 
 interface SvgDimensionsProviderProps {
   children: ReactNode;
 }
 
-const SvgDimensionsProvider = ({ children }: SvgDimensionsProviderProps) => {
+// Wrap the component with forwardRef to accept a ref from the parent
+const SvgDimensionsProvider = forwardRef<
+  SVGSVGElement,
+  SvgDimensionsProviderProps
+>(({ children }, ref) => {
   const [dimensions, setDimensions] = useState<SvgDimensions>({
     width: 0,
     height: 0,
   });
+
+  // Create an internal ref for the SVG element
   const svgRef = useRef<SVGSVGElement>(null);
+
+  // Use useImperativeHandle to expose the internal svgRef to the parent component
+  useImperativeHandle(ref, () => svgRef.current as SVGSVGElement);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -41,6 +56,6 @@ const SvgDimensionsProvider = ({ children }: SvgDimensionsProviderProps) => {
       </svg>
     </SvgDimensionsContext.Provider>
   );
-};
+});
 
 export default SvgDimensionsProvider;
