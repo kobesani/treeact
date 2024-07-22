@@ -7,7 +7,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { ListItemIcon, ListItemText } from "@mui/material";
-import { ArrowDropDown, Check } from "@mui/icons-material";
+import { ArrowDropDown } from "@mui/icons-material";
 import CssBaseline from "@mui/material/CssBaseline";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -75,13 +75,13 @@ const BasicMenu = ({ options, defaultValueIndex }: BasicMenuProps) => {
             sx={{ width: 150 }}
           >
             {/* {index === selectedIndex ? ( */}
-              <ListItemIcon>
-                <Radio
-                  checked={index === selectedIndex}
-                  value={option}
-                  name="radio-button-selection"
-                />
-              </ListItemIcon>
+            <ListItemIcon>
+              <Radio
+                checked={index === selectedIndex}
+                value={option}
+                name="radio-button-selection"
+              />
+            </ListItemIcon>
             {/* ) : null} */}
             <ListItemText>{option}</ListItemText>
           </MenuItem>
