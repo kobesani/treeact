@@ -1,18 +1,15 @@
-import { useRef, useState } from "react";
-import { Button, TextField, Grid, Box, useTheme } from "@mui/material";
+import { Grid, useTheme } from "@mui/material";
 
 import { useLinearScale } from "../hooks/LinearScale";
-import { useSvgDimensions } from "../hooks/SvgDimensions";
 import useWidthOptimizer from "../hooks/OptimizeWidth";
 
-import { Node, Tree } from "../utils/Tree/Node";
-import { NewickLexer } from "../utils/Tree/Lexer";
-import { NewickParser } from "../utils/Tree/Parser";
-import { LexException, ParseException } from "../utils/Tree/Exceptions";
+import { Node } from "../utils/Tree/Node";
 
+import { useAppStore } from "../state/AppStore";
 import NodeLayout from "./Node";
-import SvgDimensionsProvider from "../providers/SvgDimensionsProvider";
 import AngularNodeLayout from "./AngularNode";
+import SvgCanvas from "./SvgCanvas";
+import SvgExport from "./SvgExport";
 
 interface PhylogenyDefaults {
   rootBranchLength: number;
@@ -23,130 +20,34 @@ interface PhylogenyDefaults {
   paddingBottom: number;
 }
 
-interface PhylogenyProps {
-  layout: "squared" | "angular";
-  theme: "dark" | "light";
-}
-
 interface PhylogenySvgProps {
-  tree: Tree;
-  nodes: Node[];
-  layout: "squared" | "angular";
-  // theme: "dark" | "light"
   defaults?: PhylogenyDefaults;
 }
 
-const Phylogeny = ({ layout }: PhylogenyProps) => {
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  const downloadSvg = (filename: string) => {
-    if (!svgRef.current) return;
-
-    const svgElement = svgRef.current;
-    const {width, height} = svgElement.getBoundingClientRect();
-    svgElement.setAttribute("height", height.toString());
-    svgElement.setAttribute("width", width.toString());
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svgElement);
-    const blob = new Blob([svgString], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = url;
-    downloadLink.download = filename;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(url);
-  };
-
-  console.log(layout);
-  const [exportFilename, setExportFilename] = useState<string>("example.svg");
-  const exampleTree =
-    "(ant:17, ((bat:31, cow:22):25, dog:22):10, ((elk:33, fox:12):10, giraffe:15):11);";
-  const [newick, setNewick] = useState(exampleTree);
-  const [tree, setTree] = useState<Tree | null>(null);
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [parseError, setParseError] = useState<string | null>(null);
-
-  const parseTree = () => {
-    let parsedTree;
-    try {
-      const lexer = new NewickLexer(newick);
-      const parser = new NewickParser(lexer.lex());
-      parsedTree = parser.parseTree();
-      setParseError(null); // Clear previous error if parsing is successful
-    } catch (error) {
-      if (error instanceof ParseException || error instanceof LexException) {
-        setParseError("Unable to parse tree.");
-      } else {
-        setParseError("Unable to lex tree.");
-      }
-      parsedTree = null;
-    }
-    setTree(parsedTree);
-    setNodes(parsedTree?.getAllNodes("preorder") || []);
-  };
+const Phylogeny = () => {
+  const tree = useAppStore((state) => state.tree);
 
   return (
     <Grid container alignItems="center" spacing={2}>
-      <Grid item>
-        <TextField
-          error={parseError ? true : false}
-          label="Newick Tree"
-          helperText={parseError ? parseError : "Enter a valid newick tree."}
-          color={parseError ? "error" : "primary"}
-          variant="outlined"
-          value={newick}
-          onChange={(event) => setNewick(event.target.value)}
-        />
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={12}
+        lg={12}
+        className="svg-container"
+        sx={{ height: 600 }}
+      >
+        <SvgCanvas>{tree ? <PhylogenySvg /> : null}</SvgCanvas>
       </Grid>
       <Grid item>
-        <Box pb={3}>
-          {/* padding bottom (pb) for blank helpertext*/}
-          <Button onClick={parseTree} variant="contained" size="small">
-            Submit
-          </Button>
-        </Box>
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        <div
-          id="svg-container-1"
-          className="svg-container"
-          style={{ height: "600px", width: "100%" }}
-        >
-          <SvgDimensionsProvider ref={svgRef}>
-            {tree ? (
-              <PhylogenySvg tree={tree} nodes={nodes} layout={layout} />
-            ) : null}
-          </SvgDimensionsProvider>
-        </div>
-      </Grid>
-      <Grid item>
-        <TextField
-          label="SVG Filename"
-          variant="outlined"
-          value={exportFilename}
-          onChange={(event) => setExportFilename(event.target.value)}
-        />
-      </Grid>
-      <Grid item>
-        <Button
-          onClick={() => downloadSvg(exportFilename)}
-          variant="contained"
-          size="small"
-        >
-          Download
-        </Button>
+        <SvgExport />
       </Grid>
     </Grid>
   );
 };
 
 const PhylogenySvg = ({
-  tree,
-  nodes,
-  layout,
   defaults = {
     rootBranchLength: 1,
     nodeLabelPadding: 5,
@@ -156,7 +57,11 @@ const PhylogenySvg = ({
     paddingBottom: 0,
   },
 }: PhylogenySvgProps) => {
-  const { width, height } = useSvgDimensions();
+  const width = useAppStore((state) => state.width);
+  const height = useAppStore((state) => state.height);
+  const nodeStyle = useAppStore((state) => state.nodeStyle);
+  // tree here is definitely not null, bc of conditional rendering in parent component
+  const tree = useAppStore((state) => state.tree!!);
   const theme = useTheme();
 
   console.log(`PhylogenySvg: ${width} ${height}`);
@@ -203,6 +108,8 @@ const PhylogenySvg = ({
     leafNodes.map((node, index) => [node, index])
   );
 
+  const nodes = tree.getAllNodes("preorder");
+
   return (
     <>
       {theme.palette.mode === "dark" ? (
@@ -214,7 +121,7 @@ const PhylogenySvg = ({
         ></rect>
       ) : null}
       <g>
-        {layout === "angular"
+        {nodeStyle === "angular"
           ? nodes.map((node, index) => (
               <AngularNodeLayout
                 key={index}
