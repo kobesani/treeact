@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import ForestIcon from "@mui/icons-material/Forest";
-import { ButtonGroup, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useAppStore } from "../state/AppStore";
@@ -36,7 +36,10 @@ function ResponsiveAppBar() {
   const handleThemeChange = (
     event: React.MouseEvent<HTMLElement>,
     newTheme: "light" | "dark"
-  ) => themeSetter(newTheme);
+  ) => {
+    event.preventDefault();
+    themeSetter(newTheme)
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>

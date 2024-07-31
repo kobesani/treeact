@@ -21,7 +21,7 @@ export class NewickLexer {
   }
 
   lex = (): TokenMatch[] => {
-    let tokenList = [];
+    const tokenList = [];
     let currentMatch = undefined;
 
     while (this.position < this.inputTree.length) {

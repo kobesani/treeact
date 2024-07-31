@@ -55,7 +55,7 @@ const useWidthOptimizer = ({
     console.log(`${iters}: ${min} ${max}`);
 
     while (Math.abs(max - min) > precision && iters < maxIters) {
-      let value = Math.max(
+      const value = Math.max(
         ...nodeDistancesToRoot.map(
           (distance, index) =>
             mid * (dummyRootBranchLength + distance) +

@@ -21,7 +21,7 @@ const RawTextInput = () => {
       setNewick(
         "(ant:17, ((bat:31, cow:22):25, dog:22):10, ((elk:33, fox:12):10, giraffe:15):11);"
       ),
-    []
+    [setNewick]
   );
 
   return (
