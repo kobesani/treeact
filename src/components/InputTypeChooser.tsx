@@ -34,7 +34,7 @@ const RawTextInput = () => {
           helperText={"Enter a valid newick tree."}
           color={"primary"}
           variant="outlined"
-          value={newick}
+          value={newick ? newick : ""}
           onChange={(event) => setNewick(event.target.value)}
           multiline
         />
