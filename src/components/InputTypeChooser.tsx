@@ -60,7 +60,7 @@ const UrlInput = () => {
           helperText={"Enter a url"}
           color={"primary"}
           variant="outlined"
-          value={url}
+          value={url ? url : ""}
           onChange={(event) => setUrl(event.target.value)}
         />
       </Grid>
