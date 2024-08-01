@@ -1,15 +1,14 @@
 import { Grid, useTheme } from "@mui/material";
 
+import { useAppStore } from "../state/AppStore";
 import { useLinearScale } from "../hooks/LinearScale";
 import useWidthOptimizer from "../hooks/OptimizeWidth";
 
-import { Node } from "../utils/Tree/Node";
 
-import { useAppStore } from "../state/AppStore";
-import NodeLayout from "./Node";
+import { Node } from "../utils/Tree/Node";
 import AngularNodeLayout from "./AngularNode";
+import NodeLayout from "./Node";
 import SvgCanvas from "./SvgCanvas";
-import SvgExport from "./SvgExport";
 
 interface PhylogenyDefaults {
   rootBranchLength: number;
@@ -40,9 +39,6 @@ const Phylogeny = () => {
       >
         <SvgCanvas>{tree ? <PhylogenySvg /> : null}</SvgCanvas>
       </Grid>
-      <Grid item>
-        <SvgExport />
-      </Grid>
     </Grid>
   );
 };
@@ -60,6 +56,7 @@ const PhylogenySvg = ({
   const width = useAppStore((state) => state.width);
   const height = useAppStore((state) => state.height);
   const nodeStyle = useAppStore((state) => state.nodeStyle);
+  // TODO: refactor phylogeny svg and phylogeny component, should just be one
   // tree here is definitely not null, bc of conditional rendering in parent component
   const tree = useAppStore((state) => state.tree!!);
   const theme = useTheme();
@@ -112,14 +109,16 @@ const PhylogenySvg = ({
 
   return (
     <>
-      {theme.palette.mode === "dark" ? (
-        <rect
-          id="background"
-          height="100%"
-          width="100%"
-          fill={theme.palette.background.default}
-        ></rect>
-      ) : null}
+      <g>
+        {theme.palette.mode === "dark" ? (
+          <rect
+            id="background"
+            height="100%"
+            width="100%"
+            fill={theme.palette.background.default}
+          ></rect>
+        ) : null}
+      </g>
       <g>
         {nodeStyle === "angular"
           ? nodes.map((node, index) => (

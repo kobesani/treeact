@@ -10,19 +10,17 @@ const SvgCanvas = ({ children }: SvgCanvasProps) => {
   const setSvgRef = useAppStore((state) => state.setSvgRef);
   const setDimensions = useAppStore((state) => state.setDimensions);
 
+  const updateDimensions = () => {
+    if (svgRef.current) {
+      const { width, height } = svgRef.current.getBoundingClientRect();
+      setDimensions(width, height);
+    }
+  };
+
   useEffect(() => {
     // set reference on initial render
     setSvgRef(svgRef);
-
-    const updateDimensions = () => {
-      if (svgRef.current) {
-        const { width, height } = svgRef.current.getBoundingClientRect();
-        setDimensions(width, height);
-      }
-    };
-
     updateDimensions();
-
     window.addEventListener("resize", updateDimensions);
   });
 

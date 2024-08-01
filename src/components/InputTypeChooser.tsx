@@ -128,11 +128,12 @@ const EntryInterface = () => {
 
   const handleInputMethodChange = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: "string" | "file" | "url"
+    newInputMethod: "string" | "file" | "url"
   ) => {
     event.preventDefault();
-    if (newAlignment !== null) {
-      setSelected(newAlignment);
+    // null check to force one of toggle buttons to always be selected
+    if (newInputMethod !== null) {
+      setSelected(newInputMethod);
     }
   };
 

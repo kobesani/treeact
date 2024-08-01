@@ -38,7 +38,10 @@ function ResponsiveAppBar() {
     newTheme: "light" | "dark"
   ) => {
     event.preventDefault();
-    themeSetter(newTheme)
+    // null check to force one of toggle buttons to always be selected
+    if (newTheme !== null) {
+      themeSetter(newTheme);
+    }
   };
 
   return (
