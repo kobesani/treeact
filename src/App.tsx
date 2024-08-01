@@ -60,7 +60,7 @@ const App = () => {
                 <KeyboardArrowLeftRounded fontSize="large" />
               </IconButton>
             </Grid>
-            <Grid item>FIX THEME CHANGING!</Grid>
+            <Grid item>1</Grid>
             <Grid item>
               <IconButton size="small" color="primary">
                 <KeyboardArrowRightRounded fontSize="large" />
